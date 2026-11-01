@@ -1,0 +1,17 @@
+# Virtual environment
+.myenv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables and secrets
+.env
+.env.*
+
+# IDE settings
+.vscode/
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep

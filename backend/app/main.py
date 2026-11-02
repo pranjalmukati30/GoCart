@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from app.config import settings
 
 
 app = FastAPI(
-    title="GoCart API",
+    title=settings.app_name,
     description="Backend API for GoCart e-commerce platform",
-    version="1.0.0"
+    version=settings.app_version
 )
 
 

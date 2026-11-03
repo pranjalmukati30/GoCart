@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Setting(BaseSettings):
     app_name : str
     app_version : str
+    database_url : str
 
     model_config = SettingsConfigDict(
         env_file=".env",

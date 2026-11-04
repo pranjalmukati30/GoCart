@@ -4,6 +4,8 @@ class Setting(BaseSettings):
     app_name : str
     app_version : str
     database_url : str
+    secret_key : str
+
 
     model_config = SettingsConfigDict(
         env_file=".env",

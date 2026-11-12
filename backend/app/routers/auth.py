@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.user import UserCreate, UserResponse
-from app.dependencies import get_db
+from app.schemas.user import UserCreate, UserResponse, UserLogin, LoginResponse
+from app.dependencies import get_db, get_current_user
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.security import hash_password
+from app.security import hash_password, verify_password, create_access_token
 
 
 
@@ -28,3 +28,30 @@ def register(user : UserCreate, db:Session = Depends(get_db)):
     db.refresh(new_user)
 
     return new_user
+
+@router.post("/login", response_model=LoginResponse)
+def login(login_data : UserLogin, db:Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == login_data.email).first()
+
+    if user:
+        verify = verify_password(login_data.password, user.hashed_password)
+        if verify:
+            data = {
+                "sub" : str(user.id),
+                "role" : user.role
+            }
+            token = create_access_token(data)
+            return{
+                "access_token" : token,
+                "token_type" : "bearer"
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Invalid Credentials")
+
+    else:
+        raise HTTPException(status_code=401, detail="Invalid Credentials")
+
+
+@router.get("/me", response_model=UserResponse)
+def me(user:User = Depends(get_current_user)):
+    return user
